@@ -1,0 +1,10 @@
+[package]
+name = "g-tools"
+version = "0.1.0"
+edition = "2024"
+description = "Geraldo's toosl"
+license-file = "LICENSE"
+homepage = "https://geraldo.dev"
+
+
+[dependencies]
