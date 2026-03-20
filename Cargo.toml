@@ -5,6 +5,10 @@ edition = "2024"
 description = "Geraldo's toosl"
 license-file = "LICENSE"
 homepage = "https://geraldo.dev"
+default-run = "G"
 
+[[bin]]
+name = "G"
+path = "src/main.rs"
 
 [dependencies]
