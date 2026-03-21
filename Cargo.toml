@@ -2,7 +2,7 @@
 name = "g-tools"
 version = "0.1.0"
 edition = "2024"
-description = "Geraldo's toosl"
+description = "Geraldo's toos"
 license-file = "LICENSE"
 homepage = "https://geraldo.dev"
 default-run = "G"
@@ -12,3 +12,8 @@ name = "G"
 path = "src/main.rs"
 
 [dependencies]
+clap = { version="4.6.0", features = ["derive", "cargo"] }
+colored = "3.1.1"
+pathsearch = "0.2.0"
+prettycli = "0.1.1"
+sudo = "0.6.0"
