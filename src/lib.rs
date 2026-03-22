@@ -148,19 +148,9 @@ pub fn cmd_xournal(action: XournalAction, _verbose: bool) -> Result<(), &'static
     }
 }
 
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
 
     #[test]
     fn test_cmd_xournal() {
@@ -173,5 +163,11 @@ mod tests {
         assert!(result.is_err());
         let error = result.unwrap_err();
         assert_eq!(error, "Hash not found at index.txt");
+    }
+
+    #[test]
+    #[ignore = "not yet implemented"]
+    fn test_locate_related_file() {
+        // ...
     }
 }
