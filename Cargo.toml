@@ -1,11 +1,16 @@
 [package]
 name = "g-tools"
 version = "0.2.0"
-edition = "2024"
-description = "Geraldo's toos"
-license-file = "LICENSE"
-homepage = "https://geraldo.dev"
+description = "Geraldo's toolbox"
+authors = ["Geraldo Ribeiro <geraldolsribeiro@gmail.com>"]
+categories = ["command-line-utilities"]
 default-run = "G"
+edition = "2024"
+homepage = "https://lib.rs/g-tools"
+keywords = [ "subcommand", "tools", "tui" ]
+license-file = "LICENSE"
+readme = "README.md"
+# repository = "https://gitlab.com/geraldolsribeiro/g-tools"
 
 [[bin]]
 name = "G"
