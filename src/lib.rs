@@ -6,39 +6,6 @@ use std::path::Path;
 use std::process::Command;
 use std::process::Stdio;
 
-//mod G;
-// use crate::G::*;
-
-// pub use crate::G;
-// ::XournalAction;
-// pub use crate::G;
-
-// use std::env;
-// use std::path::PathBuf;
-// use std::fs;
-// use std::fs::File;
-//use std::io::{self, BufRead, BufReader};
-// use prettycli::*;
-// use std::error::Error;
-// use std::path::Path;
-// use std::fs;
-// use std::path::PathBuf;
-
-// pub fn add(left: u64, right: u64) -> u64 {
-//     left + right
-// }
-//
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-//
-//     #[test]
-//     fn it_works() {
-//         let result = add(2, 2);
-//         assert_eq!(result, 4);
-//     }
-// }
-
 #[derive(Parser)]
 #[command(author, version, about, long_about)]
 pub struct Cli {
@@ -160,7 +127,7 @@ fn locate_related_file(hash: &str) -> Option<String> {
     None
 }
 
-pub fn cmd_xournal(action: XournalAction, _verbose: bool) {
+pub fn cmd_xournal(action: XournalAction, _verbose: bool) -> Result<(), &'static str> {
     match action {
         XournalAction::Open { hash } => {
             check_executable_exists(bin_xournalpp());
@@ -173,9 +140,38 @@ pub fn cmd_xournal(action: XournalAction, _verbose: bool) {
                         .spawn()
                         .expect("Failure to execute xournallpp");
                     // .wait(); // Keep in background
+                    Ok(())
                 }
-                None => {}
+                None => Err("Hash not found at index.txt"),
             }
         }
+    }
+}
+
+pub fn add(left: u64, right: u64) -> u64 {
+    left + right
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        let result = add(2, 2);
+        assert_eq!(result, 4);
+    }
+
+    #[test]
+    fn test_cmd_xournal() {
+        let result = cmd_xournal(
+            XournalAction::Open {
+                hash: "12345678".to_string(),
+            },
+            false,
+        );
+        assert!(result.is_err());
+        let error = result.unwrap_err();
+        assert_eq!(error, "Hash not found at index.txt");
     }
 }
