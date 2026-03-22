@@ -1,7 +1,11 @@
 use clap::Parser;
 use clap::Subcommand;
+// use cli_clipboard::Clipboard;
+use cli_clipboard::ClipboardContext;
+use cli_clipboard::ClipboardProvider;
 use colored::Colorize;
 use pathsearch::find_executable_in_path;
+use std::error::Error;
 use std::path::Path;
 use std::process::Command;
 use std::process::Stdio;
@@ -35,6 +39,18 @@ pub enum XournalAction {
 
 fn show_command(cmd: String) {
     println!("CMD: {}", cmd.green().bold());
+}
+
+pub fn copy_text_to_clipboard(text: String) -> Result<(), Box<dyn Error>> {
+    let mut ctx = cli_clipboard::ClipboardContext::new()?;
+    ctx.set_contents(text.to_owned())?;
+    Ok(())
+}
+
+pub fn copy_text_from_clipboard() -> Result<String, Box<dyn Error>> {
+    let mut ctx = ClipboardContext::new()?;
+    let contents = ctx.get_contents()?;
+    Ok(contents)
 }
 
 pub fn bin_xournalpp() -> &'static str {
@@ -133,6 +149,9 @@ pub fn cmd_xournal(action: XournalAction, _verbose: bool) -> Result<(), &'static
             check_executable_exists(bin_xournalpp());
             match locate_related_file(&hash) {
                 Some(filename) => {
+                    let hash_and_filename = format!("{}\n{}", hash, filename);
+                    let _ = copy_text_to_clipboard(hash_and_filename);
+
                     let _ = Command::new(bin_xournalpp())
                         .arg(filename)
                         .stdout(Stdio::null()) // Redirect standard output to null
@@ -151,6 +170,14 @@ pub fn cmd_xournal(action: XournalAction, _verbose: bool) -> Result<(), &'static
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_copy_text_to_clipboard() {
+        let text1 = "Ipsum lorem".to_string();
+        let _ = copy_text_to_clipboard(text1);
+        let text2 = copy_text_from_clipboard();
+        assert_eq!(text2.unwrap(), "Ipsum lorem".to_string());
+    }
 
     #[test]
     fn test_cmd_xournal() {
