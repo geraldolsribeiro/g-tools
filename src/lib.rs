@@ -9,6 +9,29 @@ use std::error::Error;
 use std::path::Path;
 use std::process::Command;
 use std::process::Stdio;
+use std::sync::Mutex;
+use std::sync::OnceLock;
+
+static MUTABLE_CONFIG: OnceLock<Mutex<Config>> = OnceLock::new();
+
+#[derive(Debug)]
+struct Config {
+    index_txt_path: String,
+}
+
+pub fn initialize_mutable_config(new_index_txt_path: String) {
+    MUTABLE_CONFIG
+        .set(Mutex::new(Config {
+            index_txt_path: new_index_txt_path,
+        }))
+        .expect("Mutable config already initialized");
+}
+
+pub fn update_index_txt_path(new_index_txt_path: String) {
+    let config_lock = MUTABLE_CONFIG.get().expect("Config not initialized");
+    let mut config = config_lock.lock().unwrap(); // Acquire lock
+    config.index_txt_path = new_index_txt_path;
+}
 
 #[derive(Parser)]
 #[command(author, version, about, long_about)]
@@ -126,7 +149,8 @@ fn check_executable_exists(executable_name: &str) {
 }
 
 fn locate_related_file(hash: &str) -> Option<String> {
-    let expanded_path = shellexpand::tilde("~/pdf_images/index.txt");
+    let index_txt_path = &MUTABLE_CONFIG.get()?.lock().unwrap().index_txt_path;
+    let expanded_path = shellexpand::tilde(index_txt_path);
     let contents = std::fs::read_to_string(expanded_path.as_ref());
     for line in contents.expect("Failure reading index.txt").lines() {
         if line.starts_with(hash) {
@@ -170,6 +194,19 @@ pub fn cmd_xournal(action: XournalAction, _verbose: bool) -> Result<(), &'static
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_config() {
+        let path = "~/pdf_images/index.txt".to_string();
+        initialize_mutable_config(path.clone());
+        let index_txt_path = &MUTABLE_CONFIG
+            .get()
+            .expect("Error in config")
+            .lock()
+            .unwrap()
+            .index_txt_path;
+        assert_eq!(index_txt_path, &path);
+    }
 
     #[test]
     fn test_copy_text_to_clipboard() {

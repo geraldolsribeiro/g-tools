@@ -4,6 +4,8 @@ use std::process::ExitCode;
 use g_tools::*;
 
 fn main() -> ExitCode {
+    initialize_mutable_config("~/pdf_images/index.txt".to_string());
+
     let cli = Cli::parse();
     let status = match cli.command {
         Commands::Xournal { action } => cmd_xournal(action, cli.verbose),
