@@ -1,14 +1,13 @@
 pub mod config;
 
 use crate::config::*;
-
 use clap::Parser;
 use clap::Subcommand;
-// use cli_clipboard::Clipboard;
 use cli_clipboard::ClipboardContext;
 use cli_clipboard::ClipboardProvider;
 use colored::Colorize;
 use pathsearch::find_executable_in_path;
+use regex::RegexBuilder;
 use std::error::Error;
 use std::path::Path;
 use std::process::Command;
@@ -38,6 +37,10 @@ pub enum XournalAction {
     Open {
         #[arg(required = true, num_args = 1)]
         hash: String,
+    },
+    Search {
+        #[arg(required = true, num_args = 1)]
+        text: String,
     },
 }
 
@@ -171,6 +174,23 @@ fn bring_app_to_front(app_name: &str) {
     }
 }
 
+pub fn search_text(pattern: &String) -> Option<Vec<String>> {
+    let re = RegexBuilder::new(pattern)
+        .case_insensitive(true)
+        .build()
+        .expect("Invalid regex pattern");
+    let index_txt_path = &MUTABLE_CONFIG.get()?.lock().unwrap().index_txt_path;
+    let expanded_path = shellexpand::tilde(index_txt_path);
+    let contents = std::fs::read_to_string(expanded_path.as_ref());
+    let mut list: Vec<String> = Vec::new();
+    for line in contents.expect("Failure reading index.txt").lines() {
+        if re.is_match(line) {
+            list.push(String::from(line));
+        }
+    }
+    if list.is_empty() { None } else { Some(list) }
+}
+
 pub fn cmd_xournal(action: XournalAction, _verbose: bool) -> Result<(), &'static str> {
     match action {
         XournalAction::Open { hash } => {
@@ -196,6 +216,15 @@ pub fn cmd_xournal(action: XournalAction, _verbose: bool) -> Result<(), &'static
                 None => Err("Hash not found at index.txt"),
             }
         }
+        XournalAction::Search { text } => match search_text(&text) {
+            Some(lines) => {
+                for line in lines {
+                    println!("{}", &line);
+                }
+                Ok(())
+            }
+            None => Err("Not found"),
+        },
     }
 }
 
