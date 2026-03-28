@@ -129,6 +129,14 @@ fn check_executable_exists(executable_name: &str) {
     }
 }
 
+/// Locates a file related to the given hash by searching an index file
+///
+/// # Parameters
+/// * `hash` - SHA256 hash prefix to search for in index.txt
+///
+/// # Returns
+/// `Some(filename)` if a matching file exists, otherwise `None`
+///
 fn locate_related_file(hash: &str) -> Option<String> {
     let index_txt_path = &MUTABLE_CONFIG.get()?.lock().unwrap().index_txt_path;
     let expanded_path = shellexpand::tilde(index_txt_path);
@@ -148,6 +156,21 @@ fn locate_related_file(hash: &str) -> Option<String> {
     None
 }
 
+// osascript -e "tell application \"Xournal++\" to activate"
+fn bring_app_to_front(app_name: &str) {
+    match std::env::consts::OS {
+        "macos" => {
+            let script = format!("tell application \"{}\" to activate", app_name);
+            Command::new("osascript")
+                .arg("-e")
+                .arg(&script)
+                .output()
+                .expect("Failed to execute AppleScript");
+        }
+        &_ => todo!(),
+    }
+}
+
 pub fn cmd_xournal(action: XournalAction, _verbose: bool) -> Result<(), &'static str> {
     match action {
         XournalAction::Open { hash } => {
@@ -164,6 +187,10 @@ pub fn cmd_xournal(action: XournalAction, _verbose: bool) -> Result<(), &'static
                         .spawn()
                         .expect("Failure to execute xournallpp");
                     // .wait(); // Keep in background
+
+                    bring_app_to_front("Xournal++");
+
+                    println!("Please check Xournal++ window");
                     Ok(())
                 }
                 None => Err("Hash not found at index.txt"),
