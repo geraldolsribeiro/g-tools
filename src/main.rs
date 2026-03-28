@@ -1,6 +1,7 @@
 use clap::Parser;
 use std::process::ExitCode;
 
+use crate::config::*;
 use g_tools::*;
 
 fn main() -> ExitCode {
