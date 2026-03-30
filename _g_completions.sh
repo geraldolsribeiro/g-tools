@@ -17,7 +17,7 @@ _g_completions() {
   2)
     case ${prev} in
     xournal)
-      COMPREPLY=($(compgen -W "open search" -- ${cur}))
+      COMPREPLY=($(compgen -W "open search bookmark" -- ${cur}))
       ;;
     # other)
     #   COMPREPLY=($(compgen -W "some other args" -- ${cur}))

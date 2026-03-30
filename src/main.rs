@@ -5,7 +5,8 @@ use crate::config::*;
 use g_tools::*;
 
 fn main() -> ExitCode {
-    initialize_mutable_config("~/pdf_images/index.txt".to_string());
+    // initialize_mutable_config("~/pdf_images/index.txt".to_string());
+    initialize_mutable_config("~/pdf_images/".to_string());
 
     let cli = Cli::parse();
     let status = match cli.command {

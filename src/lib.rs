@@ -14,6 +14,9 @@ use std::process::Command;
 use std::process::Stdio;
 
 #[derive(Parser)]
+// #[command(
+//     help_template = "{author-with-newline} {about-section}Version: {version} \n {usage-heading} {usage} \n {all-args} {tab}"
+// )]
 #[command(author, version, about, long_about)]
 pub struct Cli {
     /// Enable verbose output
@@ -26,6 +29,7 @@ pub struct Cli {
 
 #[derive(Subcommand)]
 pub enum Commands {
+    #[clap(alias("x"))]
     Xournal {
         #[command(subcommand)]
         action: XournalAction,
@@ -34,13 +38,20 @@ pub enum Commands {
 
 #[derive(Subcommand)]
 pub enum XournalAction {
+    #[clap(alias("o"))]
     Open {
         #[arg(required = true, num_args = 1)]
         hash: String,
     },
+    #[clap(alias("s"))]
     Search {
         #[arg(required = true, num_args = 1)]
         text: String,
+    },
+    #[clap(alias("b"))]
+    Bookmark {
+        #[arg(required = true, num_args = 1)]
+        hash: String,
     },
 }
 
@@ -141,9 +152,8 @@ fn check_executable_exists(executable_name: &str) {
 /// `Some(filename)` if a matching file exists, otherwise `None`
 ///
 fn locate_related_file(hash: &str) -> Option<String> {
-    let index_txt_path = &MUTABLE_CONFIG.get()?.lock().unwrap().index_txt_path;
-    let expanded_path = shellexpand::tilde(index_txt_path);
-    let contents = std::fs::read_to_string(expanded_path.as_ref());
+    let index_txt = &MUTABLE_CONFIG.get()?.lock().unwrap().index_txt;
+    let contents = std::fs::read_to_string(index_txt);
     for line in contents.expect("Failure reading index.txt").lines() {
         if line.starts_with(hash) {
             let filename = line.split_whitespace().nth(1).unwrap();
@@ -179,11 +189,26 @@ pub fn search_text(pattern: &String) -> Option<Vec<String>> {
         .case_insensitive(true)
         .build()
         .expect("Invalid regex pattern");
-    let index_txt_path = &MUTABLE_CONFIG.get()?.lock().unwrap().index_txt_path;
-    let expanded_path = shellexpand::tilde(index_txt_path);
-    let contents = std::fs::read_to_string(expanded_path.as_ref());
+    let index_txt = &MUTABLE_CONFIG.get()?.lock().unwrap().index_txt;
+    let contents = std::fs::read_to_string(index_txt);
     let mut list: Vec<String> = Vec::new();
     for line in contents.expect("Failure reading index.txt").lines() {
+        if re.is_match(line) {
+            list.push(String::from(line));
+        }
+    }
+    if list.is_empty() { None } else { Some(list) }
+}
+
+pub fn show_bookmark(hash: &String) -> Option<Vec<String>> {
+    let re = RegexBuilder::new(hash)
+        .case_insensitive(true)
+        .build()
+        .expect("Invalid regex pattern");
+    let bookmarks_txt = &MUTABLE_CONFIG.get()?.lock().unwrap().bookmarks_txt;
+    let contents = std::fs::read_to_string(bookmarks_txt);
+    let mut list: Vec<String> = Vec::new();
+    for line in contents.expect("Failure reading bookmarks.txt").lines() {
         if re.is_match(line) {
             list.push(String::from(line));
         }
@@ -225,6 +250,10 @@ pub fn cmd_xournal(action: XournalAction, _verbose: bool) -> Result<(), &'static
             }
             None => Err("Not found"),
         },
+        XournalAction::Bookmark { hash } => {
+            show_bookmark(&hash);
+            Ok(())
+        }
     }
 }
 
