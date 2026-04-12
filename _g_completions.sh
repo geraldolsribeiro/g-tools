@@ -12,12 +12,15 @@ _g_completions() {
 
   case ${COMP_CWORD} in
   1)
-    COMPREPLY=($(compgen -W "help xournal" -- ${cur}))
+    COMPREPLY=($(compgen -W "help xournal microci" -- ${cur}))
     ;;
   2)
     case ${prev} in
     xournal)
       COMPREPLY=($(compgen -W "open search bookmark" -- ${cur}))
+      ;;
+    microci)
+      COMPREPLY=($(compgen -W "install" -- ${cur}))
       ;;
     # other)
     #   COMPREPLY=($(compgen -W "some other args" -- ${cur}))
