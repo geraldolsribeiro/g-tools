@@ -271,44 +271,48 @@ pub fn cmd_microci(action: MicroCIAction) -> Result<(), &'static str> {
     match action {
         MicroCIAction::Install => {
             match std::env::consts::OS {
-                "linux" => {
-                    match sudo::escalate_if_needed() {
-                        Ok(_) => {
-                            // sudo curl -fsSL https://github.com/geraldolsribeiro/microci/releases/latest/download/microCI \
-                            //   -o /usr/bin/microCI
-                            // sudo chmod 755 /usr/bin/microCI
-
-                            let url = "https://github.com/geraldolsribeiro/microci/releases/latest/download/microCI";
-                            let _status = Command::new("curl")
-                                .arg("-fsSL")
-                                .arg(url)
-                                .arg("-o")
-                                .arg("/usr/bin/microCI")
-                                .spawn()
-                                .expect("curl microci")
-                                .wait();
-                            let _status = Command::new("chmod")
-                                .arg("755")
-                                .arg("/usr/bin/microCI")
-                                .spawn()
-                                .expect("chmod microci")
-                                .wait();
-                            Ok(())
-                        }
-                        Err(e) => {
-                            eprintln!("Failed to elevate: {}", e);
-                            std::process::exit(1);
-                        }
+                "linux" => match sudo::escalate_if_needed() {
+                    Ok(_) => {
+                        let url = "https://github.com/geraldolsribeiro/microci/releases/latest/download/microCI";
+                        let _status = Command::new("curl")
+                            .arg("-fsSL")
+                            .arg(url)
+                            .arg("-o")
+                            .arg("/usr/bin/microCI")
+                            .spawn()
+                            .expect("curl microci")
+                            .wait();
+                        let _status = Command::new("chmod")
+                            .arg("755")
+                            .arg("/usr/bin/microCI")
+                            .spawn()
+                            .expect("chmod microci")
+                            .wait();
+                        let _status = Command::new("microCI")
+                            .arg("--version")
+                            .spawn()
+                            .expect("microci --version")
+                            .wait();
+                        Ok(())
                     }
-                }
+                    Err(e) => {
+                        eprintln!("Failed to elevate: {}", e);
+                        std::process::exit(1);
+                    }
+                },
                 "macos" => {
+                    // https://github.com/geraldolsribeiro/homebrew-tap
                     let _status = Command::new("brew")
                         .arg("install")
                         .arg("geraldolsribeiro/tap/microci")
                         .spawn()
                         .expect("brew install microci")
                         .wait();
-
+                    let _status = Command::new("microCI")
+                        .arg("--version")
+                        .spawn()
+                        .expect("microci --version")
+                        .wait();
                     Ok(())
                 }
                 &_ => todo!(),
