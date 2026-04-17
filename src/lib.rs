@@ -161,7 +161,7 @@ fn check_executable_exists(executable_name: &str) {
 /// # Returns
 /// `Some(filename)` if a matching file exists, otherwise `None`
 ///
-fn locate_related_file(hash: &str) -> Option<String> {
+pub fn locate_related_file(hash: &str) -> Option<String> {
     let index_txt = &MUTABLE_CONFIG.get()?.lock().unwrap().index_txt;
     let contents = std::fs::read_to_string(index_txt);
     for line in contents.expect("Failure reading index.txt").lines() {
@@ -318,50 +318,5 @@ pub fn cmd_microci(action: MicroCIAction) -> Result<(), &'static str> {
                 &_ => todo!(),
             }
         }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_config() {
-        let path = "~/pdf_images/index.txt".to_string();
-        initialize_mutable_config(path.clone());
-        let index_txt_path = &MUTABLE_CONFIG
-            .get()
-            .expect("Error in config")
-            .lock()
-            .unwrap()
-            .index_txt_path;
-        assert_eq!(index_txt_path, &path);
-    }
-
-    #[test]
-    fn test_copy_text_to_clipboard() {
-        let text1 = "Ipsum lorem".to_string();
-        let _ = copy_text_to_clipboard(text1);
-        let text2 = copy_text_from_clipboard();
-        assert_eq!(text2.unwrap(), "Ipsum lorem".to_string());
-    }
-
-    #[test]
-    fn test_cmd_xournal() {
-        let result = cmd_xournal(
-            XournalAction::Open {
-                hash: "12345678".to_string(),
-            },
-            false,
-        );
-        assert!(result.is_err());
-        let error = result.unwrap_err();
-        assert_eq!(error, "Hash not found at index.txt");
-    }
-
-    #[test]
-    #[ignore = "not yet implemented"]
-    fn test_locate_related_file() {
-        // ...
     }
 }
