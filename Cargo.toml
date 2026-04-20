@@ -1,6 +1,6 @@
 [package]
 name = "g-tools"
-version = "0.5.0"
+version = "0.5.2"
 description = "Geraldo's toolbox"
 authors = ["Geraldo Ribeiro <geraldolsribeiro@gmail.com>"]
 categories = ["command-line-utilities"]

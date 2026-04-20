@@ -1,17 +1,18 @@
 # g-tools
 
-A port of a collection of bash scripts utilities designed to enhance PDF annotation, reference management,  microCI management, and more.
-
-<img width="600px" src="https://raw.githubusercontent.com/geraldolsribeiro/g-tools/refs/heads/master/docs/imgs/logo_white_bg.png">
-
 <p align="center">
-[![Crates.io](https://img.shields.io/crates/v/g-tools)](https://crates.io/crates/g-tools)
-[![Documentation](https://img.shields.io/docsrs/g-tools)](https://docs.rs/g-tools)
-[![License](https://img.shields.io/crates/l/g-tools)](LICENSE)
-[![Downloads](https://img.shields.io/crates/d/g-tools)](https://crates.io/crates/g-tools)
+
+[![Version](https://img.shields.io/crates/v/g-tools.svg)](https://crates.io/crates/g-tools)
+[![Downloads](https://img.shields.io/crates/d/g-tools.svg)](https://crates.io/crates/g-tools)
+[![License](https://img.shields.io/crates/l/g-tools.svg)](https://crates.io/crates/g-tools)
+[![Documentation](https://img.shields.io/docsrs/g-tools.svg)](https://docs.rs/g-tools)
 [![GitHub Stars](https://img.shields.io/github/stars/geraldolsribeiro/g-tools)](https://github.com/geraldolsribeiro/g-tools/stargazers)
 
 </p>
+
+A port of a collection of bash scripts utilities designed to enhance PDF annotation, reference management,  microCI management, and more.
+
+<img width="600px" src="https://raw.githubusercontent.com/geraldolsribeiro/g-tools/refs/heads/master/docs/imgs/logo_white_bg.png">
 
 ## Installation
 
