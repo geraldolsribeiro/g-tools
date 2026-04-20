@@ -35,19 +35,6 @@ mod tests {
         }
     }
 
-    #[test]
-    fn test_cmd_xournal() {
-        let result = cmd_xournal(
-            XournalAction::Open {
-                hash: "12345678".to_string(),
-            },
-            false,
-        );
-        assert!(result.is_err());
-        let error = result.unwrap_err();
-        assert_eq!(error, "Hash not found at index.txt");
-    }
-
     // #[test]
     // fn test_search_text() {
     //     // Create temp directory with test files
@@ -88,7 +75,7 @@ mod tests {
         std::fs::create_dir_all(&tmp_dir).unwrap();
 
         let bookmarks_path = tmp_dir.join("bookmarks.txt");
-        std::fs::write(&bookmarks_path, "abc123 Chapter 1\nabc456 Section A").unwrap();
+        std::fs::write(&bookmarks_path, "abc12345 Chapter 1\nabc456 Section A").unwrap();
 
         // Update config to use test path
         if let Some(config_lock) = MUTABLE_CONFIG.get() {
@@ -102,6 +89,7 @@ mod tests {
         std::fs::remove_dir_all(&tmp_dir).ok();
     }
 
+    // FIXME: refactor this test for existing pdf
     #[test]
     fn test_locate_related_file() {
         let tmp_dir = std::env::temp_dir().join("g_tools_test_loc_");
@@ -171,6 +159,20 @@ mod tests {
         assert!(result.is_ok());
 
         std::fs::remove_dir_all(&tmp_dir).ok();
+    }
+
+    // Refactor this test for existing pdf and hash
+    #[test]
+    fn test_cmd_xournal() {
+        let result = cmd_xournal(
+            XournalAction::Open {
+                hash: "12345678".to_string(),
+            },
+            false,
+        );
+        assert!(result.is_err());
+        let error = result.unwrap_err();
+        assert_eq!(error, "Hash not found at index.txt");
     }
 
     #[test]
