@@ -6,6 +6,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `g-tools` is a Rust CLI toolbox ("Geraldo's toolbox") that wraps and extends functionality around Xournal++ PDF annotation software and microCI, originally ported from bash scripts. It manages an index of PDF files by hash and provides search/bookmark capabilities.
 
+
+## Build & Test Commands
+
+- Build: `cargo build`
+- Run: `cargo run -- --port <PORT> --dir <DIRECTORY>`
+- Release build: `cargo build --release`
+- Test: `cargo test`
+- Test single test: `cargo test <TEST_NAME>`
+- Check only: `cargo check`
+- Format code: `cargo fmt`
+- Lint: `cargo clippy`
+- Update dependencies: `cargo update`
+
 ## Common Commands
 
 ### Build & Run
