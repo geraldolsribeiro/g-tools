@@ -1,6 +1,6 @@
 [package]
 name = "g-tools"
-version = "0.5.2"
+version = "0.5.3"
 description = "Geraldo's toolbox"
 authors = ["Geraldo Ribeiro <geraldolsribeiro@gmail.com>"]
 categories = ["command-line-utilities"]
@@ -10,7 +10,7 @@ homepage = "https://lib.rs/g-tools"
 keywords = [ "subcommand", "tools", "tui" ]
 license-file = "LICENSE"
 readme = "README.md"
-# repository = "https://gitlab.com/geraldolsribeiro/g-tools"
+repository = "https://gitlab.com/geraldolsribeiro/g-tools"
 
 [[bin]]
 name = "G"
