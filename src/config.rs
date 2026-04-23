@@ -20,9 +20,9 @@ pub fn initialize_mutable_config(dir: String) {
 
     MUTABLE_CONFIG
         .set(Mutex::new(Config {
-            pdf_images: pdf_images,
-            index_txt: index_txt,
-            bookmarks_txt: bookmarks_txt,
+            pdf_images,
+            index_txt,
+            bookmarks_txt,
         }))
         .expect("Mutable config already initialized");
 }

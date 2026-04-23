@@ -81,6 +81,7 @@ pub fn copy_text_from_clipboard() -> Result<String, Box<dyn Error>> {
     Ok(contents)
 }
 
+// Returns the path to the `xournalpp` executable based on the current operating system.
 pub fn bin_xournalpp() -> &'static str {
     match std::env::consts::OS {
         "linux" => "/usr/bin/xournalpp",
@@ -194,7 +195,7 @@ fn bring_app_to_front(app_name: &str) {
     }
 }
 
-pub fn search_text(pattern: &String) -> Option<Vec<String>> {
+pub fn search_text(pattern: &str) -> Option<Vec<String>> {
     let re = RegexBuilder::new(pattern)
         .case_insensitive(true)
         .build()
@@ -210,7 +211,7 @@ pub fn search_text(pattern: &String) -> Option<Vec<String>> {
     if list.is_empty() { None } else { Some(list) }
 }
 
-pub fn show_bookmark(hash: &String) -> Option<Vec<String>> {
+pub fn show_bookmark(hash: &str) -> Option<Vec<String>> {
     let re = RegexBuilder::new(hash)
         .case_insensitive(true)
         .build()
@@ -240,8 +241,8 @@ pub fn cmd_xournal(action: XournalAction, _verbose: bool) -> Result<(), &'static
                         .stdout(Stdio::null()) // Redirect standard output to null
                         .stderr(Stdio::null()) // Redirect standard error to null
                         .spawn()
-                        .expect("Failure to execute xournallpp");
-                    // .wait(); // Keep in background
+                        .expect("Failure to execute xournallpp")
+                        .wait();
 
                     bring_app_to_front("Xournal++");
 

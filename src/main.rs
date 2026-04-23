@@ -15,12 +15,10 @@ fn main() -> ExitCode {
     };
 
     match status {
-        Ok(()) => {
-            return ExitCode::SUCCESS;
-        }
+        Ok(()) => ExitCode::SUCCESS,
         Err(err) => {
             eprintln!("{}", err);
-            return ExitCode::FAILURE;
+            ExitCode::FAILURE
         }
     }
 }
