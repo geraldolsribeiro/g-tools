@@ -12,6 +12,7 @@ fn main() -> ExitCode {
     let status = match cli.command {
         Commands::Xournal { action } => cmd_xournal(action, cli.verbose),
         Commands::Microci { action } => cmd_microci(action),
+        Commands::Cpp { action } => cmd_cpp(action),
     };
 
     match status {

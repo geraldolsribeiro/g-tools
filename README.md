@@ -34,6 +34,9 @@ cargo install g-tools
 - **microCI Management**
   - `install`: Install microCI tool (from github on Linux or Homebrew tap on macOS).
 
+- **C++ tooling**
+  - `G cpp diag-flags`: Print the configured C++ diagnostic compiler flags.
+
 ## Usage
 
 run the tool directly:

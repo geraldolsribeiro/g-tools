@@ -38,6 +38,10 @@ pub enum Commands {
         #[command(subcommand)]
         action: MicroCIAction,
     },
+    Cpp {
+        #[command(subcommand)]
+        action: CppAction,
+    },
 }
 
 #[derive(Subcommand)]
@@ -64,6 +68,51 @@ pub enum MicroCIAction {
     #[clap(alias("m"))]
     Install,
 }
+
+#[derive(Subcommand)]
+pub enum CppAction {
+    DiagFlags,
+}
+
+pub const CPP_DIAG_FLAGS: &[&str] = &[
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic",
+    "-Wshadow",
+    "-Wconversion",
+    "-Werror",
+    "-fsanitize=undefined,address",
+    "-Wfloat-equal",
+    "-Wformat-nonliteral",
+    "-Wformat-security",
+    "-Wformat-y2k",
+    "-Wformat=2",
+    "-Wimport",
+    "-Winvalid-pch",
+    "-Wlogical-op",
+    "-Wmissing-declarations",
+    "-Wmissing-field-initializers",
+    "-Wmissing-format-attribute",
+    "-Wmissing-include-dirs",
+    "-Wmissing-noreturn",
+    "-Wnested-externs",
+    "-Wpacked",
+    "-Wpointer-arith",
+    "-Wredundant-decls",
+    "-Wstack-protector",
+    "-Wstrict-null-sentinel",
+    "-Wswitch-enum",
+    "-Wundef",
+    "-Wwrite-strings",
+    "-Wdisabled-optimization",
+    "-Wpadded",
+    "-Wsign-conversion",
+    "-Wsign-promo",
+    "-Wstrict-aliasing=2",
+    "-Wstrict-overflow=5",
+    "-Wunused",
+    "-Wunused-parameter",
+];
 
 fn show_command(cmd: String) {
     println!("CMD: {}", cmd.green().bold());
@@ -263,6 +312,15 @@ pub fn cmd_xournal(action: XournalAction, _verbose: bool) -> Result<(), &'static
         },
         XournalAction::Bookmark { hash } => {
             show_bookmark(&hash);
+            Ok(())
+        }
+    }
+}
+
+pub fn cmd_cpp(action: CppAction) -> Result<(), &'static str> {
+    match action {
+        CppAction::DiagFlags => {
+            println!("{}", CPP_DIAG_FLAGS.join(" "));
             Ok(())
         }
     }
